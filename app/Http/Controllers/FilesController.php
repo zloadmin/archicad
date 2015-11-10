@@ -20,7 +20,7 @@ class FilesController extends Controller
     public function store(Request $request)
     {
         // 1. Проходим валидацию
-        /*
+        
         $rules = [
             'name' => 'required',
             'type' => 'required|in:1,2',
@@ -51,32 +51,33 @@ class FilesController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) return redirect()->back()->withErrors($validator)->withInput();
 
-        */
+
         // 2. Сохраняем файл
 
-        $name = md5(time().str_random(10)).".gsm";
-        /*
+        $name = md5(time().str_random(10));
+
         $directory = base_path()."/files/gdl/";
 
-        $request->file('file')->move($directory, $name); //Exception
+        $request->file('file')->move($directory, $name.".gsm"); //Exception
 
-        */
+
 
         // 3. Конвертируем в xml
 
 
-        $nix_gdl_file = base_path().'/files/gdl/'.$name;
+        $nix_gdl_file = base_path().'/files/gdl/'.$name.".gsm";
 
-        $nix_xml_file = base_path().'/files/xml/'.$name;
+        $nix_xml_file = base_path().'/files/xml/'.$name.".xml";
 
 
         $win_gdl_file = "Z:".str_replace("/", "\\", $nix_gdl_file);
 
         $win_xml_file = "Z:".str_replace("/", "\\", $nix_xml_file);
 
-        $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe libpart2xml -l UTF8 "'.$win_gdl_file.'" "'.$nix_xml_file.'"';
+        $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe libpart2xml -l UTF8 "'.$win_gdl_file.'" "'.$win_xml_file.'"';
 
-        var_dump($comand);
+        exec($comand);
+
         // 4. Проверяем наличе нужных переменных
 
 
