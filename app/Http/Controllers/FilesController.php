@@ -55,17 +55,28 @@ class FilesController extends Controller
         // 2. Сохраняем файл
 
         $name = md5(time().str_random(10)).".gsm";
-
+        /*
         $directory = base_path()."/files/gdl/";
 
         $request->file('file')->move($directory, $name); //Exception
 
-
+        */
 
         // 3. Конвертируем в xml
 
 
+        $nix_gdl_file = base_path().'/files/gdl/'.$name;
 
+        $nix_xml_file = base_path().'/files/xml/'.$name;
+
+
+        $win_gdl_file = "Z:".str_replace("/", "\\", $nix_gdl_file);
+
+        $win_xml_file = "Z:".str_replace("/", "\\", $nix_xml_file);
+
+        $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe libpart2xml -l UTF8 "'.$win_gdl_file.'" "'.$nix_xml_file.'"';
+
+        var_dump($comand);
         // 4. Проверяем наличе нужных переменных
 
 
