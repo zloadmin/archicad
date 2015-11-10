@@ -20,7 +20,7 @@ class FilesController extends Controller
     public function store(Request $request)
     {
         // 1. Проходим валидацию
-        
+
         $rules = [
             'name' => 'required',
             'type' => 'required|in:1,2',
