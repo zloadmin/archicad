@@ -76,9 +76,9 @@ class FilesController extends Controller
 
         $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe libpart2xml -l UTF8 "'.$win_gdl_file.'" "'.$win_xml_file.'"';
 
-        exec($comand);
+        passthru ($comand, $return);
 
-        dd($comand);
+        dd($return);
         // 4. Проверяем наличе нужных переменных
 
 
