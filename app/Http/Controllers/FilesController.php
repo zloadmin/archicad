@@ -78,6 +78,7 @@ class FilesController extends Controller
 
         exec($comand);
 
+        dd($comand);
         // 4. Проверяем наличе нужных переменных
 
 
