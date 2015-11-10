@@ -11,19 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 Route::group(['middleware' => 'admin.auth'], function () {
 
-    Route::get('/admin', function () {
-        return view('admin');
-    });
+    Route::get('/', 'FilesController@create');
 
-    Route::get('/addfile', function () {
-        return view('admin');
-    });
-
+    Route::post('/', 'FilesController@store');
 });
