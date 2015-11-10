@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			XML-Schema definition of the XML format of the Graphisoft Library Parts.
+		</xs:documentation>
+	</xs:annotation>
+
+	<!-- ********** Common element types ****************************************************************************** -->
+
+	<xs:simpleType name="BooleanYesNo">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="yes" />
+			<xs:enumeration value="no" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UNIDtype">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The preferred format is {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}-{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.
+				The exact format is described in the regular expression. This format is a bit complex but in normal cases the verification won't take too long.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[ \t]*[{(][0-9a-fA-F]{8}([+\-/*.,; ]*[0-9a-fA-F]{4}){2}([+\-/*.,; ]*[0-9a-fA-F]{2}){8}[})](-[{(][0-9a-fA-F]{8}([+\-/*.,; ]*[0-9a-fA-F]{4}){2}([+\-/*.,; ]*[0-9a-fA-F]{2}){8}[})])?[ \t]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UNIDtypeLoose">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The preferred format is {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}-{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.
+				This format descriptor doesn't ensure a correct GUID string but it is easy to read and to verify.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[ \t]*\{[0-9a-fA-F\-]*\}-\{[0-9a-fA-F\-]*\}[ \t]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GUIDtype">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				The preferred format is XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.
+				The exact format is described in the regular expression.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9a-fA-F]{8}([+\-/*.,; ]*[0-9a-fA-F]{4}){2}([+\-/*.,; ]*[0-9a-fA-F]{2}){8}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GDLScriptType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				This type collects the permitted characters in a GDL script, but is will slow down the verification of the XML if you start using it.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9a-zA-Z]|[()^*/%+\-=#&gt;&lt;&amp;|@:,;!´&quot;_~ \t\r\n])*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BinaryType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				This type collects the permitted characters in a binary section, but is will slow down the verification of the XML if you start using it.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9a-fA-F \t\r\n]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Platform">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Mac" />
+			<xs:enumeration value="Win" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="RGBColor">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				RGB Color in binary 2D representation
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="red" type="xs:unsignedLong" use="required" />
+		<xs:attribute name="green" type="xs:unsignedLong" use="required" />
+		<xs:attribute name="blue" type="xs:unsignedLong" use="required" />
+	</xs:complexType>
+
+	<xs:attributeGroup name="SectionBaseAttrs">
+		<xs:attribute name="SubIdent" type="xs:unsignedShort" use="required" />
+		<xs:attribute name="SectVersion" type="xs:short" use="required" />
+		<xs:attribute name="SectionFlags" type="xs:byte" use="required" />
+	</xs:attributeGroup>
+	<xs:attributeGroup name="SectionBinaryAttrs">
+		<xs:attribute name="length_in_bytes" type="xs:long" use="required" />
+		<xs:attribute name="platform" type="Platform" use="required"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="SectionPicAttrs">
+		<xs:attribute name="path" type="xs:string" use="optional" />
+		<xs:attribute name="length_in_bytes" type="xs:long" use="optional" />
+		<xs:attribute name="platform" type="Platform" use="optional"/>
+	</xs:attributeGroup>
+
+	<xs:complexType name="GDLScript">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				For the limitations in a GDL script see the GDL Manual.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">		<!-- you can use GDLScriptType, but it will slow down the verification dramatically -->
+				<xs:attributeGroup ref="SectionBaseAttrs" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="BinarySection">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				Our binary representation allows hexadecimal and whitespace characters.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">		<!-- you can use BinaryType, but it will slow down the verification a bit -->
+				<xs:attributeGroup ref="SectionBaseAttrs" />
+				<xs:attributeGroup ref="SectionBinaryAttrs" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PictureSection">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				A picture element can contain raw binary picture data
+				or a path to a picture file.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">		<!-- you can use BinaryType, but it will slow down the verification a bit -->
+				<xs:attributeGroup ref="SectionBaseAttrs" />
+				<xs:attributeGroup ref="SectionPicAttrs" />
+				<xs:attribute name="MIME" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="empty" />
+
+	<!-- ********** Parameter types - common descriptors ************************************************************** -->
+
+	<xs:simpleType name="ParamName">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				This type collects the permitted characters in a GDL identifier. In the XML file you can place whitespace characters before and after the name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="31" />
+			<xs:pattern value="[a-zA-Z_~][a-zA-Z_~0-9]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Description" type="xs:string" />
+	<xs:element name="Fix" type="empty" />
+	<xs:element name="Flags">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">The flags which are set in the mask are present in the XML representation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="ParFlg_Child" type="empty" />
+				<xs:element name="ParFlg_BoldName" type="empty" />
+				<xs:element name="ParFlg_Fixed" type="empty" />
+				<xs:element name="ParFlg_Unique" type="empty" />
+				<xs:element name="ParFlg_SHidden" type="empty" />
+				<xs:element name="ParFlg_Open" type="empty" />
+				<xs:element name="ParFlg_Disabled" type="empty" />
+				<xs:element name="ParFlg_Hidden" type="empty" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Value">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="Meaning" type="xs:string" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ArrayValues">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="AVal" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attribute name="Row" type="xs:long" use="required" />
+								<xs:attribute name="Column" type="xs:long" />
+								<xs:attribute name="Meaning" type="xs:string" use="optional" />
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="FirstDimension" use="required" type="xs:long" />
+			<xs:attribute name="SecondDimension" use="required" type="xs:long" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UNID" type="UNIDtype" />
+	<xs:complexType name="ParameterTypeWithValue">
+		<xs:sequence>
+			<xs:element ref="Description" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="Fix" minOccurs="0" />
+			<xs:element ref="Flags" minOccurs="0" maxOccurs="1" />
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element ref="Value" />
+				<xs:element ref="ArrayValues" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="Name" use="required" type="ParamName" />
+	</xs:complexType>
+	<xs:complexType name="ParameterTypeWithoutValue">
+		<xs:sequence>
+			<xs:element ref="Description" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="Fix" minOccurs="0" />
+			<xs:element ref="Flags" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="Name" use="required" type="ParamName" />
+	</xs:complexType>
+
+
+	<!-- ********** Placed object record *********************************************************************** -->
+
+	<xs:simpleType name="FrameExpressionType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				This type only restricts the string length of a frame expression.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="512" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:element name="PlacedObjects">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="PlacedObject">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+
+							<!-- ********** ID ********** -->
+							<xs:element name="ID" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="UnID" type="UNIDtype"/>
+										<xs:element name="DocumentName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+							<!-- ********** Info String ********** -->
+							<xs:element name="InfoString" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+							<!-- ********** Context (Wall Favorit for doors/windows, Slab favorit for Skylights) ********** -->
+							<xs:element name="Context" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="WallFavorite" type="xs:string" minOccurs="0" maxOccurs="1"/>
+										<xs:element name="RoofFavorite" type="xs:string" minOccurs="0" maxOccurs="1"/>
+										<xs:element name="PolyFavorite" type="xs:string" minOccurs="0" maxOccurs="1"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+
+							<!-- ********** Position ********** -->
+							<xs:element name="Position" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="x" type="xs:double" minOccurs="1" maxOccurs="1"/>
+										<xs:element name="y" type="xs:double" minOccurs="1" maxOccurs="1"/>
+										<xs:element name="z" type="xs:double" minOccurs="0" maxOccurs="1"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+							<!-- ********** Method ********** -->
+							<xs:element name="Method" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:all minOccurs="0">
+										<xs:element name="Mirror" type="BooleanYesNo" minOccurs="0"/>
+										<xs:element name="Rot" type="xs:double" minOccurs="0"/>
+										<xs:element name="Flip" type="BooleanYesNo" minOccurs="0"/>
+										<xs:element name="Anchor" type="xs:long" minOccurs="0"/>
+									</xs:all>	
+								</xs:complexType>
+							</xs:element>
+
+							<!-- ********** ParamSection section ********** -->
+							<xs:element name="Parameters">
+								<xs:complexType>
+									<xs:choice minOccurs="0" maxOccurs="unbounded">									<!-- should be maxOccurs="1024", but it would be very slow with Xerces-C++ 3.0.1 -->
+										<xs:element name="Length" type="ParameterTypeWithValue" />
+										<xs:element name="Boolean" type="ParameterTypeWithValue" />
+										<xs:element name="Integer" type="ParameterTypeWithValue" />
+										<xs:element name="Title" type="ParameterTypeWithoutValue" />
+										<xs:element name="Separator" type="ParameterTypeWithoutValue" />
+										<xs:element name="String" type="ParameterTypeWithValue" />
+										<xs:element name="Angle" type="ParameterTypeWithValue" />
+										<xs:element name="FillPattern" type="ParameterTypeWithValue" />
+										<xs:element name="LineType" type="ParameterTypeWithValue" />
+										<xs:element name="Material" type="ParameterTypeWithValue" />
+										<xs:element name="PenColor" type="ParameterTypeWithValue" />
+										<xs:element name="RealNum" type="ParameterTypeWithValue" />
+										<xs:element name="ColorRGB" type="ParameterTypeWithValue" />
+										<xs:element name="Intensity" type="ParameterTypeWithValue" />
+										<xs:element name="LightSwitch" type="ParameterTypeWithValue" />
+									</xs:choice>
+									<xs:attribute name="number" type="xs:unsignedShort" use="optional" />			<!-- not used by LP_XMLConverter -->
+									<xs:attribute name="fix_vars" type="xs:unsignedShort" use="optional" />		<!-- not used by LP_XMLConverter -->
+								</xs:complexType>
+							</xs:element>
+
+							<!-- ********** LibPart ********** -->
+							<xs:element name="LibPart">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Location" type="xs:string" minOccurs="0"/>
+										<xs:element name="Symbol">
+											<xs:complexType>
+												<xs:choice minOccurs="0" maxOccurs="unbounded">
+													<xs:any namespace="##any" processContents="skip" />
+												</xs:choice>
+												<xs:attribute name="IsArchivable" type="BooleanYesNo"/>
+												<xs:attribute name="IsPlaceable" type="BooleanYesNo"/>
+												<xs:attribute name="MainGuid" type="GUIDtype"/>
+												<xs:attribute name="MigrationValue" type="xs:string"/>
+												<xs:attribute name="Owner" type="xs:long"/>
+												<xs:attribute name="Signature" type="xs:long"/>
+												<xs:attribute name="Version" type="xs:long"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>	<!-- Placed Object -->
+			</xs:choice>
+			<xs:attribute name="Version">
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedLong">
+						<xs:maxInclusive value="1" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element> <!-- Placed Objects -->
+</xs:schema>

@@ -19,6 +19,8 @@ class FilesController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Проходим валидацию
+        /*
         $rules = [
             'name' => 'required',
             'type' => 'required|in:1,2',
@@ -48,6 +50,29 @@ class FilesController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) return redirect()->back()->withErrors($validator)->withInput();
+
+        */
+        // 2. Сохраняем файл
+
+        $name = md5(time().str_random(10)).".gsm";
+
+        $directory = base_path()."/files/gdl/";
+
+        $request->file('file')->move($directory, $name); //Exception
+
+
+
+        // 3. Конвертируем в xml
+
+
+
+        // 4. Проверяем наличе нужных переменных
+
+
+        // 5. Добовлям в базу
+
+        // 6. Редирект на лист файов
+
 
     }
 

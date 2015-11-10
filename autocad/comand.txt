@@ -1,0 +1,14 @@
+LP_XMLConverter.exe l2x -l UTF8 E:\Desktop\93_архикад_макросы\gdl\ E:\Desktop\93_архикад_макросы\xml\
+
+
+
+Z:\home\bill\autocad\autocad\gdl
+
+
+wine LP_XMLConverter.exe l2x -l UTF8 "Z:\home\bill\autocad\autocad\gdl" "Z:\home\bill\autocad\autocad\xml"
+
+
+
+ wine LP_XMLConverter.exe libpart2xml -l UTF8 "Z:\home\bill\autocad\autocad\gdl\Timer_VR 19.gsm" "Z:\home\bill\autocad\autocad\xml\timertest.xml"
+
+

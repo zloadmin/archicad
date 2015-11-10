@@ -1,0 +1,51 @@
+﻿   /* Style sheet for old (non SQL) ArchiCAD listing */
+
+body {
+	padding:      0px;
+	color:        black;
+	font-family:  Geneva CY, Helvetica CY, Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+@media screen {
+	body {
+		background:   lightslategray;
+	}
+}
+table {
+	border:       thin groove;
+	background:   #999999;
+	margin-top:   0.2em;
+	margin-bottom:0.2em;
+}
+th {
+	background:   #cccccc;
+	font-size:    70%;
+	border-style: none;
+	vertical-align: top;
+}
+th.hleft, th.hright {
+	padding:      0px 1px;
+	text-align:   center;
+}
+th.fleft {
+	padding:      2px;
+	text-align:   left;
+	white-space:  nowrap;
+}
+th.fright {
+	padding:      2px;
+	text-align:   right;
+	white-space:  nowrap;
+}
+td {
+	border-style: none;
+	padding:      2px;
+	background:   white;
+	font-size:    70%;
+	white-space:  nowrap;
+}
+td.left {
+	text-align:   left;
+}
+td.right {
+	text-align:   right;
+}
