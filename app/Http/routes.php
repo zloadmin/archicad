@@ -18,4 +18,6 @@ Route::group(['middleware' => 'admin.auth'], function () {
     Route::get('/', 'FilesController@create');
 
     Route::post('/', 'FilesController@store');
+
+    Route::get('/list', 'FilesController@files_list');
 });

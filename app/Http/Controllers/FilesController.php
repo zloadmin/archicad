@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Files;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -19,6 +21,7 @@ class FilesController extends Controller
 
     public function store(Request $request)
     {
+
         // 1. Проходим валидацию
 
         $rules = [
@@ -51,7 +54,6 @@ class FilesController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) return redirect()->back()->withErrors($validator)->withInput();
 
-
         // 2. Сохраняем файл
 
         $name = md5(time().str_random(10));
@@ -60,10 +62,7 @@ class FilesController extends Controller
 
         $request->file('file')->move($directory, $name.".gsm"); //Exception
 
-
-
         // 3. Конвертируем в xml
-
 
         $nix_gdl_file = base_path().'/files/gdl/'.$name.".gsm";
 
@@ -76,58 +75,46 @@ class FilesController extends Controller
 
         $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe libpart2xml -l UTF8 "'.$win_gdl_file.'" "'.$win_xml_file.'"';
 
-        $cmd = shell_exec($comand);
-        dd($cmd);
+        exec($comand);
+
         // 4. Проверяем наличе нужных переменных
-
-
+        /*
+        if(!is_file($nix_xml_file)) return redirect()->back()->withErrors('Ошибка конвертирование в xml формат');
+        */
         // 5. Добовлям в базу
+
+
+        $newfile = new Files();
+
+        $newfile['name'] = $request->input('name');
+        $newfile['md5_name'] = $name;
+        $newfile['original_name'] = $_FILES['file']['name'];
+
+        if($request->input('type')==1) {
+            $newfile['last_date'] = $request->input('date');
+            $newfile['type'] = 1;
+        } else {
+            $newfile['reload'] = $request->input('period');
+            $newfile['type'] = 2;
+        }
+
+        $newfile->save();
 
         // 6. Редирект на лист файов
 
+        return redirect()->to('list');
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+
+    public function files_list()
     {
-        //
+        $all_files = Files::all();
+
+        return View('files.list')->with('files', $all_files);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

@@ -14,10 +14,11 @@ class CreateTableFiles extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('md5_name')->unique();
+            $table->string('original_name');
             $table->tinyInteger('type');
-            $table->time('last_date');
+            $table->dateTime('last_date');
             $table->integer('reload');
             $table->timestamps();
         });
