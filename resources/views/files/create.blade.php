@@ -19,7 +19,7 @@
 
         <div class="form-group">
             {!! Form::label('name', 'Название файла*') !!}
-            {!! Form::text('name', '', array('class' => 'form-control', 'required' => 'required')) !!}
+            {!! Form::text('name', '', array('class' => 'form-control', 'required' => 'required', 'style' => 'width: 30%;')) !!}
         </div>
 
         <div class="form-group">Срок действия</div>

@@ -78,9 +78,9 @@ class FilesController extends Controller
         exec($comand);
 
         // 4. Проверяем наличе нужных переменных
-        /*
+        
         if(!is_file($nix_xml_file)) return redirect()->back()->withErrors('Ошибка конвертирование в xml формат');
-        */
+
         // 5. Добовлям в базу
 
 
@@ -117,6 +117,16 @@ class FilesController extends Controller
 
     public function destroy($id)
     {
-        //
+        $file = Files::find($id);
+        if($file) {
+            unlink(base_path().'/files/gdl/'.$file->md5_name.".gsm");
+            unlink(base_path().'/files/xml/'.$file->md5_name.".xml");
+            $file->delete();
+            return redirect()->to('list');
+        } else {
+            return redirect()->back()->withErrors('Ошибка удаления');
+        }
+
+
     }
 }

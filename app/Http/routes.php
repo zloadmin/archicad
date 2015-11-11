@@ -20,4 +20,6 @@ Route::group(['middleware' => 'admin.auth'], function () {
     Route::post('/', 'FilesController@store');
 
     Route::get('/list', 'FilesController@files_list');
+
+    Route::delete('delete_file/{id}', 'FilesController@destroy');
 });
