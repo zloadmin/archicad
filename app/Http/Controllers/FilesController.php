@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use Response;
 use File;
-use DB;
 
 class FilesController extends Controller
 {
@@ -143,13 +142,21 @@ class FilesController extends Controller
     {
         $file = Files::find($request->input('id'));
         if($file) {
-
-
+            $auth = Files::is_auth($request->input('user_id'), $request->input('hash'));
+            if(!$auth) return "Авторизация не пройдена";
+            return var_dump($file);
         } else {
-            return "Файл не найден":
+            return "Файл не найден";
         }
 
 
+    }
+
+    public function getfile_get(Request $request)
+    {
+        $auth = Files::is_auth('1', '76eb88ef9349e519c8ccc549a484c412');
+
+        dd($auth);
     }
 
     public function destroy($id)

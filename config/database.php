@@ -64,7 +64,7 @@ return [
             'strict'    => false,
         ],
 
-        'mysql' => [
+        'mysql2' => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST2', 'localhost'),
             'database'  => env('DB_DATABASE2', 'forge'),

@@ -33,5 +33,6 @@ Route::group(['middleware' => 'list.auth'], function () {
 
 });
 
+Route::get('/getfile_get', 'FilesController@getfile_get');
 
 Route::post('/getfile', 'FilesController@getfile');

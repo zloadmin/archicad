@@ -40,5 +40,20 @@ class Files extends Model
         }
     }
 
+    static function is_auth($user_id, $hash)
+    {
+        if( $curl = curl_init() ) {
+            curl_setopt($curl, CURLOPT_URL, 'http://archicad-master.ru/engine/ajax/user_auth.php');
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, "user_id=".$user_id."&hash=".$hash."&key=".getenv('AC_KEY'));
+            $out = curl_exec($curl);
+            if($out=="true") return true;
+            curl_close($curl);
+        }
+        return false;
+
+    }
+
 
 }
