@@ -86,12 +86,12 @@ class FilesController extends Controller
             return redirect()->back()->withErrors('Ошибка конвертирование в xml формат');
         }
         $get_file = File::get($nix_xml_file);
-        if(!substr_count($get_file, '<Value><![CDATA["AB345"]]></Value>')) {
-            return redirect()->back()->withErrors('Строка "<Value><![CDATA["AB345"]]></Value>" не найдена');
-        }
-        if(!substr_count($get_file, '<Value>160123</Value>')) {
-            return redirect()->back()->withErrors('Строка "<Value>160123</Value>" не найдена');
-        }
+//        if(!substr_count($get_file, '<Value><![CDATA["AB345"]]></Value>')) {
+//            return redirect()->back()->withErrors('Строка "<Value><![CDATA["AB345"]]></Value>" не найдена');
+//        }
+//        if(!substr_count($get_file, '<Value>160123</Value>')) {
+//            return redirect()->back()->withErrors('Строка "<Value>160123</Value>" не найдена');
+//        }
 
         // 5. Добовлям в базу
 
