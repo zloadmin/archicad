@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Validator;
 use Response;
 use File;
+use DB;
+
 class FilesController extends Controller
 {
 
@@ -138,7 +141,15 @@ class FilesController extends Controller
 
     public function getfile(Request $request)
     {
-        return '123';
+        $file = Files::find($request->input('id'));
+        if($file) {
+
+
+        } else {
+            return "Файл не найден":
+        }
+
+
     }
 
     public function destroy($id)
