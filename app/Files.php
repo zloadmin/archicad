@@ -78,6 +78,8 @@ class Files extends Model
 
         if(!is_file($nix_file)) {
 
+            $orig_nix_file = base_path().'/files/xml/'.$file->md5_name.'.xml';
+
             // copy xml file
             copy($orig_nix_file, $nix_file_xml);
 
@@ -90,7 +92,8 @@ class Files extends Model
 
             file_put_contents($nix_file_xml, $data_file);
             
-            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$win_file_xml.'" "'.$win_file.'"';
+
+            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$orig_win_file.'" "'.$win_file.'"';
 
             exec($comand);
 
