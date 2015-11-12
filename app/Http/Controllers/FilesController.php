@@ -136,6 +136,11 @@ class FilesController extends Controller
 
     }
 
+    public function getfile(Request $request)
+    {
+        return '123';
+    }
+
     public function destroy($id)
     {
         $file = Files::find($id);
@@ -152,8 +157,7 @@ class FilesController extends Controller
 
     public function json_list()
     {
-        $files = Files::all();
+        return Files::all()->toJson();
 
-        return Response::json($files);
     }
 }

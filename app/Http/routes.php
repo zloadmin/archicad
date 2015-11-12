@@ -32,3 +32,6 @@ Route::group(['middleware' => 'list.auth'], function () {
     Route::get('/json_list', 'FilesController@json_list');
 
 });
+
+
+Route::post('/getfile', 'FilesController@getfile');
