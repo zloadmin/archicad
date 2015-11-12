@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Response;
 
+
 class Files extends Model
 {
     protected $table = 'files';
@@ -65,20 +66,31 @@ class Files extends Model
     {
         $adate = self::conver_date($file->last);
 
+
+
         $name_file = $file->md5_name."_".$user_id."_".$adate.".gsm";
-
         $nix_file = base_path().'/files/user_files/'.$name_file;
-
         $win_file = "Z:".str_replace("/", "\\", $nix_file);
 
+        $name_file_xml = $file->md5_name."_".$user_id."_".$adate.".xml";
+        $nix_file_xml = base_path().'/files/user_files/'.$name_file_xml;
+        $win_file_xml = "Z:".str_replace("/", "\\", $nix_file_xml);
 
         if(!is_file($nix_file)) {
 
-            $orig_nix_file = base_path().'/files/xml/'.$file->md5_name.'.xml';
+            // copy xml file
+            copy($orig_nix_file, $nix_file_xml);
 
-            $orig_win_file = "Z:".str_replace("/", "\\", $orig_nix_file);
+            //str rep
+            $data_file = file_get_contents($nix_file_xml);
 
-            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$orig_win_file.'" "'.$win_file.'"';
+            $data_file = str_replace('<Value><![CDATA["AB345"]]></Value>', '<Value><![CDATA["AB'.$user_id.'"]]></Value>', $data_file);
+
+            $data_file = str_replace('<Value>160123</Value>', '<Value>'.$adate.'</Value>', $data_file);
+
+            file_put_contents($nix_file_xml, $data_file);
+            
+            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$win_file_xml.'" "'.$win_file.'"';
 
             exec($comand);
 
