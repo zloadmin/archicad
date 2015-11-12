@@ -21,5 +21,14 @@ Route::group(['middleware' => 'admin.auth'], function () {
 
     Route::get('/list', 'FilesController@files_list');
 
+    Route::get('/show/{id}', 'FilesController@show');
+
     Route::delete('delete_file/{id}', 'FilesController@destroy');
+});
+
+
+Route::group(['middleware' => 'list.auth'], function () {
+
+    Route::get('/json_list', 'FilesController@json_list');
+
 });

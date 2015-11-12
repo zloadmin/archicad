@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Validator;
-
+use Response;
+use File;
 class FilesController extends Controller
 {
 
@@ -64,9 +65,9 @@ class FilesController extends Controller
 
         // 3. Конвертируем в xml
 
-        $nix_gdl_file = base_path().'/files/gdl/'.$name.".gsm";
+        $nix_gdl_file = base_path().'/files/gdl/'.$name.'.gsm';
 
-        $nix_xml_file = base_path().'/files/xml/'.$name.".xml";
+        $nix_xml_file = base_path().'/files/xml/'.$name.'.xml';
 
 
         $win_gdl_file = "Z:".str_replace("/", "\\", $nix_gdl_file);
@@ -78,8 +79,17 @@ class FilesController extends Controller
         exec($comand);
 
         // 4. Проверяем наличе нужных переменных
-        
-        if(!is_file($nix_xml_file)) return redirect()->back()->withErrors('Ошибка конвертирование в xml формат');
+
+        if(!is_file($nix_xml_file)) {
+            return redirect()->back()->withErrors('Ошибка конвертирование в xml формат');
+        }
+        $get_file = File::get($nix_xml_file);
+        if(!substr_count($get_file, '<Value><![CDATA["AB345"]]></Value>')) {
+            return redirect()->back()->withErrors('Строка "<Value><![CDATA["AB345"]]></Value>" не найдена');
+        }
+        if(!substr_count($get_file, '<Value>160123</Value>')) {
+            return redirect()->back()->withErrors('Строка "<Value>160123</Value>" не найдена');
+        }
 
         // 5. Добовлям в базу
 
@@ -113,20 +123,37 @@ class FilesController extends Controller
 
         return View('files.list')->with('files', $all_files);
     }
+    public function show($id)
+    {
 
+        $file = Files::find($id);
+        if($file) {
+            $get_file = File::get(base_path().'/files/xml/'.$file->md5_name.'.xml');
+            return response($get_file, 200)->header('Content-Type', 'text/xml');
+        } else {
+            return redirect()->back()->withErrors('Файл не найден');
+        }
+
+    }
 
     public function destroy($id)
     {
         $file = Files::find($id);
         if($file) {
-            unlink(base_path().'/files/gdl/'.$file->md5_name.".gsm");
-            unlink(base_path().'/files/xml/'.$file->md5_name.".xml");
+            unlink(base_path().'/files/gdl/'.$file->md5_name.'.gsm');
+            unlink(base_path().'/files/xml/'.$file->md5_name.'.xml');
             $file->delete();
             return redirect()->to('list');
         } else {
             return redirect()->back()->withErrors('Ошибка удаления');
         }
 
+    }
 
+    public function json_list()
+    {
+        $files = Files::all();
+
+        return Response::json($files);
     }
 }

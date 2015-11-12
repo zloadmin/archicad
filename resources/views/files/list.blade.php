@@ -22,6 +22,7 @@
                 <th>Оригинальное название</th>
                 <th>Дата добавления</th>
                 <th>Срок обновления</th>
+                <th>Просмотр</th>
                 <th>Удалить</th>
             </tr>
         </thead>
@@ -37,6 +38,7 @@
                 @else
                     <td>Обновлять каждые: {{ $file->reload / 86400 }} дней.</td>
                 @endif
+                <td><a href="/show/{{ $file->id }}" class="btn btn-success">Просмотр</a></td>
                 <td>
                     {!! Form::open(array('url' => 'delete_file/'.$file->id, 'method' => 'delete')) !!}
 
