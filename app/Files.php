@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use Carbon\Carbon;
+use Response;
 
 class Files extends Model
 {
@@ -64,7 +65,7 @@ class Files extends Model
     {
         $adate = self::conver_date($file->last);
 
-        $name_file = $file->md5_name."_".$user_id."_".$adate.".xml";
+        $name_file = $file->md5_name."_".$user_id."_".$adate.".gsm";
 
         $nix_file = base_path().'/files/user_files/'.$name_file;
 
