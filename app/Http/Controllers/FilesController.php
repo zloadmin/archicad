@@ -154,7 +154,8 @@ class FilesController extends Controller
 
     public function getfile_get(Request $request)
     {
-        $auth = Files::is_auth('1', '76eb88ef9349e519c8ccc549a484c412');
+        $file = Files::find(1);
+        $auth = Files::get_file($file, '123');
 
         dd($auth);
     }

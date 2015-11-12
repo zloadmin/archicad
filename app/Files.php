@@ -55,5 +55,37 @@ class Files extends Model
 
     }
 
+    static function conver_date($date)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('ymd');
+    }
+
+    static function get_file(Files $file, $user_id)
+    {
+        $adate = self::conver_date($file->last);
+
+        $name_file = $file->md5_name."_".$user_id."_".$adate.".xml";
+
+        $nix_file = base_path().'/files/user_files/'.$name_file;
+
+        $win_file = "Z:".str_replace("/", "\\", $nix_file);
+
+
+        if(!is_file($nix_file)) {
+
+            $orig_nix_file = base_path().'/files/xml/'.$file->md5_name.'.xml';
+
+            $orig_win_file = "Z:".str_replace("/", "\\", $orig_nix_file);
+
+            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$orig_win_file.'" "'.$win_file.'"';
+
+            exec($comand);
+
+            if(!is_file($nix_file)) die("error create file");
+        }
+
+        return Response::download($nix_file, $name_file);
+    }
+
 
 }
