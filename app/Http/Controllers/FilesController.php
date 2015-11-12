@@ -142,7 +142,7 @@ class FilesController extends Controller
     {
         $file = Files::find($request->input('id'));
         if($file) {
-            $auth = Files::is_auth($request->input('user_id'), $request->input('hash'));
+            $auth = Files::is_auth($request->input('iduser'), $request->input('hash'));
             if(!$auth) return "Авторизация не пройдена";
             return var_dump($file);
         } else {
