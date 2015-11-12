@@ -91,9 +91,9 @@ class Files extends Model
             $data_file = str_replace('<Value>160123</Value>', '<Value>'.$adate.'</Value>', $data_file);
 
             file_put_contents($nix_file_xml, $data_file);
-            
 
-            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$orig_win_file.'" "'.$win_file.'"';
+
+            $comand = 'wine '.base_path().'/autocad/LP_XMLConverter.exe xml2libpart -l UTF8 "'.$win_file_xml.'" "'.$win_file.'"';
 
             exec($comand);
 
