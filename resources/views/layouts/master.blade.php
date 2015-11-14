@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Autocad Service  - @yield('title')</title>
+    <title>ArhiCAD Service  - @yield('title')</title>
     <link rel="stylesheet" href="/static/styles/bootstrap.min.css">
     <link rel="stylesheet" href="/static/styles/jquery.datetimepicker.css">
     <link rel="stylesheet" href="/static/styles/main.css">
@@ -12,7 +12,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">Autocad Service</a>
+            <a class="navbar-brand" href="/">ArhiCAD Service</a>
         </div>
     </div>
 </div>
